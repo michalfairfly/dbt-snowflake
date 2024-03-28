@@ -32,6 +32,7 @@ class SnowflakeConfig(AdapterConfig):
     tmp_relation_type: Optional[str] = None
     merge_update_columns: Optional[str] = None
     target_lag: Optional[str] = None
+    virtual_columns: Optional[Dict[str, Any]] = None
 
 
 class SnowflakeAdapter(SQLAdapter):

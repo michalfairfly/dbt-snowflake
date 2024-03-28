@@ -13,7 +13,7 @@
     {%- set cluster_by_keys = config.get('cluster_by', default=none) -%}
     {%- set enable_automatic_clustering = config.get('automatic_clustering', default=false) -%}
     {%- set copy_grants = config.get('copy_grants', default=false) -%}
-
+    {%- set virtual_columns = config.get('virtual_columns', default=none) -%}
     {%- if cluster_by_keys is not none and cluster_by_keys is string -%}
       {%- set cluster_by_keys = [cluster_by_keys] -%}
     {%- endif -%}
@@ -43,6 +43,11 @@
             {{ compiled_code }}
           {%- endif %}
         );
+      {% if virtual_columns is not none %}
+        {% for key, value in virtual_columns.items() %}
+          alter table {{ relation }} add column {{ key }} {{ value.type }} as ({{ value.expression }});
+        {% endfor %}
+      {% endif %}
       {% if cluster_by_string is not none and not temporary -%}
         alter table {{relation}} cluster by ({{cluster_by_string}});
       {%- endif -%}
